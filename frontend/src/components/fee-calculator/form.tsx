@@ -23,9 +23,7 @@ export function FeeCalculatorForm(props: FeeCalculatorFormProps) {
               inputMode="decimal"
               placeholder={LABEL.amountPlaceholder}
               value={amount}
-              onValueChange={onAmountChange}
               onChange={(event) => onAmountChange((event.target as HTMLInputElement).value)}
-              onInput={(event) => onAmountChange((event.target as HTMLInputElement).value)}
               className="h-14 rounded-xl border-slate-200 bg-white pl-8 text-lg font-medium text-slate-900 shadow-sm transition-all focus-visible:border-blue-600 focus-visible:ring-4 focus-visible:ring-blue-600/10"
               required
             />

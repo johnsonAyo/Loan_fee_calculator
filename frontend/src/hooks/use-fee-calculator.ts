@@ -12,7 +12,6 @@ export function useFeeCalculator() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<FeeResponse | null>(null)
   const [errorMessage, setErrorMessage] = useState("")
-
   const amountValidationMessage = getAmountValidationMessage(amount)
   const canSubmit = amount.trim().length > 0 && term !== "" && amountValidationMessage === "" && !isLoading
 

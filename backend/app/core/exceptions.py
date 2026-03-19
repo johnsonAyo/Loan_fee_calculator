@@ -29,3 +29,6 @@ class ValidationError(FeeCalculationError):
 class BreakpointNotFoundError(FeeCalculationError):
     error_code = "breakpoint_not_found"
     expose_details = False
+
+class LoanValidationError(FeeCalculationError):
+    error_code = "loan_validation_error"

@@ -13,6 +13,16 @@ class EmptyFeeRepository:
     def get_breakpoints(self, term: int):
         return []
 
+class UnsortedFeeRepository:
+    def get_breakpoints(self, term: int):
+        if term == 24:
+            return [
+                (Decimal("4000"), Decimal("160")),
+                (Decimal("2000"), Decimal("100")),
+                (Decimal("3000"), Decimal("120")),
+            ]
+        return []
+
 
 def test_service_returns_exact_breakpoint_fee():
     service = FeeCalculatorService(StaticFeeRepository(), LinearInterpolationStrategy())
@@ -53,6 +63,11 @@ def test_service_raises_breakpoint_not_found_with_details():
     assert exception.error_code == "breakpoint_not_found"
     assert exception.details["term"] == 12
     assert exception.details["amount"] == "1500"
+
+def test_service_sorts_unsorted_breakpoints_before_lookup():
+    service = FeeCalculatorService(UnsortedFeeRepository(), LinearInterpolationStrategy())
+    fee = service.calculate_fee(LoanApplication(amount=Decimal("2750"), term=24))
+    assert fee == Decimal("115")
 
 
 def test_linear_strategy_rejects_equal_breakpoint_amounts():
