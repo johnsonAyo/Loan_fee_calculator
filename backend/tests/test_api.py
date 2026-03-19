@@ -56,6 +56,9 @@ def test_calculate_fee_rejects_amount_below_minimum():
 def test_calculate_fee_rejects_more_than_two_decimal_places():
     response = client.post("/api/v1/fees/calculate", json={"amount": "1250.555", "term": 12})
     assert response.status_code == 422
+    payload = response.json()
+    detail_messages = [item["msg"] for item in payload.get("detail", [])]
+    assert "Value error, Amount must have at most 2 decimal places" in detail_messages
 
 
 def test_calculate_fee_accepts_absolute_upper_bound():

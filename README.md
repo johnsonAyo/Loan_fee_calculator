@@ -92,6 +92,7 @@ The test suite is designed to validate both correctness and integration paths ac
 - Rounding up when total is not divisible by 5
 - Linear interpolation computes expected value
 - Linear interpolation rejects malformed equal breakpoints
+- Property-based checks assert total payable is always divisible by 5 across randomized valid inputs
 
 ### Backend: Service Tests
 - Exact breakpoint returns expected fee
@@ -154,6 +155,16 @@ make build
 make test-e2e
 ```
 
+### Containerized Run
+
+```bash
+docker compose up --build
+```
+
+Services:
+- Backend: `http://127.0.0.1:8000`
+- Frontend: `http://127.0.0.1:3000`
+
 ### Manual Setup - Backend
 
 ```bash
@@ -188,8 +199,14 @@ Optional environment variable: `NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000`
 - API clients can consume `Decimal` values serialized as strings
 - Breakpoint data source is static in this version
 - Fee breakpoint amounts are expected to be sorted in ascending order by source
-- Because breakpoint ordering is critical to interpolation and range lookup, the service validates ordering at runtime and only sorts when needed
+- Because breakpoint ordering is critical to interpolation and binary-search lookup, the service validates ordering at runtime and only sorts when needed
 - If breakpoints are already sorted, the service skips sorting to avoid unnecessary overhead
+
+## Architecture Decisions
+
+- ADRs are documented in `docs/adr/`
+- 0001 explains the interpolation strategy abstraction
+- 0002 explains why decimal fields are serialized as strings in API responses
 
 ## Challenges
 

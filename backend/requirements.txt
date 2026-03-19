@@ -3,6 +3,7 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 pytest
+hypothesis
 httpx
 ruff
 mypy

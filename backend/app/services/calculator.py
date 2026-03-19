@@ -1,4 +1,5 @@
 import logging
+from bisect import bisect_left
 from decimal import Decimal
 from app.services.constants import (
     BREAKPOINT_NOT_FOUND_ERROR,
@@ -28,18 +29,10 @@ class FeeCalculatorService:
         )
         if not is_sorted:
             breakpoints = sorted(breakpoints, key=lambda point: point[LOW_INDEX])
-        lower = None
-        upper = None
+        amounts = [point[LOW_INDEX] for point in breakpoints]
+        position = bisect_left(amounts, application.amount)
 
-        for index in range(len(breakpoints) - 1):
-            current = breakpoints[index]
-            following = breakpoints[index + 1]
-            if current[LOW_INDEX] <= application.amount <= following[LOW_INDEX]:
-                lower = current
-                upper = following
-                break
-
-        if lower is None or upper is None:
+        if position >= len(breakpoints) or (position == 0 and amounts[position] != application.amount):
             error = BreakpointNotFoundError(
                 BREAKPOINT_NOT_FOUND_ERROR.format(term=application.term, amount=application.amount),
                 details={
@@ -55,13 +48,12 @@ class FeeCalculatorService:
             )
             raise error
 
-        if lower[LOW_INDEX] == application.amount:
-            rounded_fee = round_to_multiple_of_five(application.amount, lower[HIGH_INDEX])
-            return rounded_fee
-        if upper[LOW_INDEX] == application.amount:
-            rounded_fee = round_to_multiple_of_five(application.amount, upper[HIGH_INDEX])
+        if amounts[position] == application.amount:
+            rounded_fee = round_to_multiple_of_five(application.amount, breakpoints[position][HIGH_INDEX])
             return rounded_fee
 
+        lower = breakpoints[position - 1]
+        upper = breakpoints[position]
         base_fee = self.strategy.calculate(application.amount, lower, upper)
         rounded_fee = round_to_multiple_of_five(application.amount, base_fee)
         return rounded_fee
