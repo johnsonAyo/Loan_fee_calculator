@@ -1,0 +1,40 @@
+import { MAX_BORROW_AMOUNT, MIN_BORROW_AMOUNT } from "@/constants/fee-calculator"
+import { SelectedTermOption } from "@/types/fee-calculator"
+
+export function getAmountValidationMessage(amount: string): string {
+  const trimmed = amount.trim()
+  if (!trimmed) {
+    return ""
+  }
+  const parsed = Number(trimmed)
+  if (Number.isNaN(parsed)) {
+    return "Enter a valid amount."
+  }
+  if (parsed < MIN_BORROW_AMOUNT) {
+    return `Amount must be at least £${MIN_BORROW_AMOUNT.toLocaleString("en-GB")}.`
+  }
+  if (parsed > MAX_BORROW_AMOUNT) {
+    return `Amount must be no more than £${MAX_BORROW_AMOUNT.toLocaleString("en-GB")}.`
+  }
+  return ""
+}
+
+type SubmitValidationInput = {
+  submittedAmount: string
+  amountValidationMessage: string
+  term: SelectedTermOption
+}
+
+export function getSubmitValidationError(input: SubmitValidationInput): string {
+  const { submittedAmount, amountValidationMessage, term } = input
+  if (!submittedAmount) {
+    return "loan-amount: Invalid value"
+  }
+  if (amountValidationMessage) {
+    return amountValidationMessage
+  }
+  if (term === "") {
+    return "term: Invalid value"
+  }
+  return ""
+}
