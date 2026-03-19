@@ -1,4 +1,4 @@
-# Loan Fee Calculation
+# Loan Fee Calculator
 
 ## Overview
 
