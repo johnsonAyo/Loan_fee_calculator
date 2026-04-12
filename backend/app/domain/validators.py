@@ -19,13 +19,17 @@ def validate_term(term: int) -> None:
         raise LoanValidationError(f"Invalid term {term}. Must be one of {VALID_TERMS}")
 
 
+def validate_amount_scale(amount: Decimal) -> None:
+    exponent = amount.as_tuple().exponent
+    if not isinstance(exponent, int):
+        raise LoanValidationError("Amount must be a finite decimal value")
+    if exponent < -2:
+        raise LoanValidationError("Amount must have at most 2 decimal places")
+
+
 def validate_amount_boundaries_and_precision(amount: Decimal) -> None:
     if amount < MIN_LOAN_AMOUNT or amount > MAX_LOAN_AMOUNT:
         raise LoanValidationError(
             f"Amount {amount} is outside allowed range {MIN_LOAN_AMOUNT}-{MAX_LOAN_AMOUNT}"
         )
-    exponent = amount.as_tuple().exponent
-    if not isinstance(exponent, int):
-        raise LoanValidationError(f"Amount {amount} is not a finite decimal value")
-    if exponent < -2:
-        raise LoanValidationError(f"Amount {amount} has more than 2 decimal places")
+    validate_amount_scale(amount)

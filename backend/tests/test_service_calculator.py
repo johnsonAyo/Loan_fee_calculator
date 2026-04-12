@@ -70,6 +70,12 @@ def test_service_sorts_unsorted_breakpoints_before_lookup():
     assert fee == Decimal("115")
 
 
+def test_service_finds_exact_match_in_unsorted_breakpoints():
+    service = FeeCalculatorService(UnsortedFeeRepository(), LinearInterpolationStrategy())
+    fee = service.calculate_fee(LoanApplication(amount=Decimal("3000"), term=24))
+    assert fee == Decimal("120")
+
+
 def test_linear_strategy_rejects_equal_breakpoint_amounts():
     strategy = LinearInterpolationStrategy()
     with pytest.raises(ValidationError) as exc_info:

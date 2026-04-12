@@ -1,7 +1,9 @@
 from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_validator
 from decimal import Decimal
+from app.core.exceptions import LoanValidationError
 from app.domain.constants import LoanTerm, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT
 from app.domain.entities import LoanApplication
+from app.domain.validators import validate_amount_scale as validate_amount_scale_rule
 
 class LoanRequest(BaseModel):
     model_config = ConfigDict(
@@ -18,11 +20,10 @@ class LoanRequest(BaseModel):
     @field_validator("amount")
     @classmethod
     def validate_amount_scale(cls, value: Decimal) -> Decimal:
-        exponent = value.as_tuple().exponent
-        if not isinstance(exponent, int):
-            raise ValueError("Amount must be a finite decimal value")
-        if exponent < -2:
-            raise ValueError("Amount must have at most 2 decimal places")
+        try:
+            validate_amount_scale_rule(value)
+        except LoanValidationError as error:
+            raise ValueError(error.message) from error
         return value
 
     def to_domain(self) -> LoanApplication:

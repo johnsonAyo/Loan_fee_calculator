@@ -9,7 +9,6 @@ from app.services import FeeCalculatorService
 def get_fee_repository() -> IFeeRepository:
     """
     Returns the concrete implementation of the fee data source.
-    In a real app, you might initialize a DB session here.
     """
     return StaticFeeRepository()
 
@@ -27,10 +26,8 @@ def get_calculator_service(
 ) -> FeeCalculatorService:
     """
     Injects the repository and strategy into the service.
-    This is where the 'Wiring' happens.
     """
     return FeeCalculatorService(repository=repo, strategy=strategy)
 
 # 4. Create a Type Alias for cleaner Route signatures
-# This is very similar to NestJS 'Injection Tokens'
 CalculatorService = Annotated[FeeCalculatorService, Depends(get_calculator_service)]

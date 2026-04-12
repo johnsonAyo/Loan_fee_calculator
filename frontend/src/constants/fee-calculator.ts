@@ -25,4 +25,6 @@ export const LABEL = {
 export const MIN_BORROW_AMOUNT = 1000
 export const MAX_BORROW_AMOUNT = 20000
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000"
+// Use relative path for API calls if NEXT_PUBLIC_API_BASE_URL is not set
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ""
+export const toTestIdToken = (value: string) => value.toLowerCase().replace(/\s+/g, "-")

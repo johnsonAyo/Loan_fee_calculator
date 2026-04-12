@@ -23,7 +23,8 @@ export function FeeCalculatorForm(props: FeeCalculatorFormProps) {
               inputMode="decimal"
               placeholder={LABEL.amountPlaceholder}
               value={amount}
-              onChange={(event) => onAmountChange((event.target as HTMLInputElement).value)}
+              data-testid="amount-input"
+              onChange={(event) => onAmountChange(event.target.value)}
               className="h-14 rounded-xl border-slate-200 bg-white pl-8 text-lg font-medium text-slate-900 shadow-sm transition-all focus-visible:border-blue-600 focus-visible:ring-4 focus-visible:ring-blue-600/10"
               required
             />
@@ -39,6 +40,8 @@ export function FeeCalculatorForm(props: FeeCalculatorFormProps) {
             {TERM_OPTIONS.map((option) => (
               <button
                 key={option.value}
+                data-testid={`term-option-${option.value}`}
+                aria-pressed={term === option.value}
                 type="button"
                 onClick={() => onTermChange(option.value)}
                 className={`flex h-14 items-center justify-center rounded-xl border-2 text-lg font-bold transition-all ${
@@ -58,6 +61,7 @@ export function FeeCalculatorForm(props: FeeCalculatorFormProps) {
 
       <Button
         type="submit"
+        data-testid="submit-quote"
         className="h-14 w-full rounded-xl bg-blue-600 text-lg font-bold text-white shadow-lg shadow-blue-600/20 transition-all hover:bg-blue-700 hover:shadow-blue-600/30 active:scale-[0.98]"
         disabled={!canSubmit}
       >

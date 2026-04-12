@@ -22,3 +22,13 @@ def test_linear_interpolation_strategy_calculates_expected_fee():
         (Decimal("3000"), Decimal("120")),
     )
     assert fee == Decimal("115")
+
+
+def test_linear_interpolation_strategy_handles_flat_fee_bands():
+    strategy = LinearInterpolationStrategy()
+    fee = strategy.calculate(
+        Decimal("1500"),
+        (Decimal("1000"), Decimal("50")),
+        (Decimal("2000"), Decimal("50")),
+    )
+    assert fee == Decimal("50")

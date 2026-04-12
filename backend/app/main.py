@@ -55,7 +55,7 @@ def create_application() -> FastAPI:
 
     application.include_router(api_router, prefix="/api/v1")
 
-    @application.get("/", tags=["Health"])
+    @application.get("/api/health", tags=["Health"])
     async def health_check():
         emit_event(logging.INFO, "health_check_called")
         return {
@@ -63,6 +63,24 @@ def create_application() -> FastAPI:
             "service": settings.APP_NAME,
             "version": "1.0.0"
         }
+
+    # Serve React Frontend
+    import os
+    from fastapi.staticfiles import StaticFiles
+    
+    frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend/out"))
+    if os.path.isdir(frontend_dir):
+        application.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+    else:
+        @application.get("/", tags=["Health"])
+        async def root_health_check():
+            return {
+                "status": "online",
+                "service": settings.APP_NAME,
+                "version": "1.0.0",
+                "message": "Frontend build not found"
+            }
+            
     return application
 
 app = create_application()

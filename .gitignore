@@ -35,3 +35,15 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# .NET / C#
+[Bb]in/
+[Oo]bj/
+*.user
+
+# Go
+backend-go/bin/
+
+# Node
+node_modules/
+.next/

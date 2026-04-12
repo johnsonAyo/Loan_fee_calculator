@@ -3,7 +3,11 @@ import { FormEvent, useState } from "react"
 import { calculateFee } from "@/api/fee-calculator"
 import { LABEL } from "@/constants/fee-calculator"
 import { getApiErrorMessage } from "@/lib/fee-calculator-error"
-import { getAmountValidationMessage, getSubmitValidationError } from "@/lib/fee-calculator-validation"
+import {
+  getAmountValidationMessage,
+  getSubmitValidationError,
+  sanitizeAmountInput,
+} from "@/lib/fee-calculator-validation"
 import { FeeResponse, SelectedTermOption } from "@/types/fee-calculator"
 
 export function useFeeCalculator() {
@@ -14,6 +18,10 @@ export function useFeeCalculator() {
   const [errorMessage, setErrorMessage] = useState("")
   const amountValidationMessage = getAmountValidationMessage(amount)
   const canSubmit = amount.trim().length > 0 && term !== "" && amountValidationMessage === "" && !isLoading
+
+  const setSanitizedAmount = (value: string) => {
+    setAmount(sanitizeAmountInput(value))
+  }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -58,7 +66,7 @@ export function useFeeCalculator() {
       errorMessage,
     },
     actions: {
-      setAmount,
+      setAmount: setSanitizedAmount,
       setTerm,
       handleSubmit,
     },
